@@ -1,0 +1,16 @@
+{
+    "name": "itscaro/composer-global-installer",
+    "type": "composer-plugin",
+    "license": "MIT",
+    "autoload": {
+        "psr-0": {
+            "GlobalInstaller\\Composer": "/"
+        }
+    },
+    "extra": {
+        "class": "Global\\Composer\\GlobalInstallerPlugin"
+    },
+    "require": {
+        "composer-plugin-api": "1.0.0"
+    }
+}
