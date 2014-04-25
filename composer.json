@@ -8,9 +8,12 @@
         }
     },
     "extra": {
-        "class": "GlobalInstaller\\Composer\\GlobalInstaller"
+        "class": "GlobalInstaller\\Composer\\GlobalInstallerPlugin"
     },
     "require": {
         "composer-plugin-api": "1.0.0"
+    },
+    "require-dev": {
+        "composer/composer": "~1.0@dev"
     }
 }
