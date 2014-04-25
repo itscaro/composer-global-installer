@@ -16,8 +16,8 @@ use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Package\PackageInterface;
-use Composer\Package\Version\VersionParser;
-use Composer\Json\JsonFile;
+use Composer\Installer\LibraryInstaller;
+use Composer\Package\PackageInterface;
 
 /**
  * Global Installer installs packages in global directory.
@@ -115,4 +115,5 @@ class GlobalInstaller extends LibraryInstaller
     {
         return 'global-library' === $packageType;
     }
+
 }
