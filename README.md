@@ -45,7 +45,7 @@ Default values
     "itscaro-global-installer": {
       "vendor-global-dir": "vendor-global",
       "vendor-global-packages": [],
-      "vendor-global-supported-types": [
+      "vendor-global-types": [
         "library"
       ]
     }
