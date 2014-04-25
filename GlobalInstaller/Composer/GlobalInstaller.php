@@ -1,15 +1,5 @@
 <?php
 
-/*
- * This file is part of Composer.
- *
- * (c) Nils Adermann <naderman@naderman.de>
- *     Jordi Boggiano <j.boggiano@seld.be>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace GlobalInstaller\Composer;
 
 use Composer\Composer;
@@ -19,18 +9,29 @@ use Composer\Package\PackageInterface;
 use Composer\Installer\LibraryInstaller;
 
 /**
- * Global Installer installs packages in global directory.
- *
- * @author Martin Hasoň <martin.hason@gmail.com>
+ * Global Installer installs packages in a directory with the version number
  */
 class GlobalInstaller extends LibraryInstaller
 {
 
     protected $globalDir;
+    protected $globalPackages = array();
+    protected $supportedType = array('library');
 
-    public function __construct(IOInterface $io, Composer $composer, $type = 'global-library')
+    public function __construct(IOInterface $io, Composer $composer, $type = null)
     {
-        $this->globalDir = $globalDir = "/vendor-global";
+        if ($composer->getConfig()->has('vendor-global-dir')) {
+            $this->globalDir = $composer->getConfig()->get('vendor-global-dir');
+        } else {
+            $this->globalDir = "vendor-global";
+        }
+
+        if ($composer->getConfig()->has('vendor-global')) {
+            $this->globalPackages = $composer->getConfig()->get('vendor-global');
+            if (!is_array($this->globalPackages)) {
+                $this->globalPackages = array();
+            }
+        }
 
         parent::__construct($io, $composer, $type);
     }
@@ -85,20 +86,31 @@ class GlobalInstaller extends LibraryInstaller
 
     protected function getPackageBasePath(PackageInterface $package)
     {
-        $this->initializeGlobalDir();
-        $this->initializeVendorDir();
+        if (isset($this->globalDir)) {
+            // If certains packages are specified to be global
+            if (!empty($this->globalPackages) && !in_array($package->getName(), $this->globalPackages)) {
+                return $this->getPackageBasePath($package);
+            }
 
-        return $this->globalDir . '/' . $this->getPackagePath($package);
+            $this->initializeGlobalDir();
+            $this->initializeVendorDir();
+
+            return $this->globalDir . '/' . $this->getPackagePath($package);
+        } else {
+            return $this->getPackageBasePath($package);
+        }
     }
 
     protected function getPackagePath(PackageInterface $package)
     {
+        /*
         $version = $package->getVersion();
         if ($package->isDev() && $reference = $package->getSourceReference()) {
             $version .= '-' . (strlen($reference) === 40 ? substr($reference, 0, 7) : $reference);
         }
+        */
 
-        return $package->getPrettyName() . '-' . $version;
+        return $package->getPrettyName() . '-' . $package->getPrettyVersion();
     }
 
     protected function initializeGlobalDir()
@@ -112,7 +124,7 @@ class GlobalInstaller extends LibraryInstaller
      */
     public function supports($packageType)
     {
-        return 'global-library' === $packageType;
+        return in_array($packageType, $this->supportedType);
     }
 
 }
