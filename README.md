@@ -68,4 +68,17 @@ Only zendframework/zendframework1 package is installed in /usr/share/php
 }
 ```
 
+Usage:
+
+The plugin should be the first required packaged.
+
+{
+  "require": {
+    "itscaro/composer-global-installer": "1.0.0",
+    "zendframework/zendframework1": "1.12.6"
+  }
+}
+
+=======================
+
 Credits to Martin Hasoň <martin.hason@gmail.com>
