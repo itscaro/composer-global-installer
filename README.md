@@ -1,4 +1,4 @@
-composer-global-library
+Composer global installer
 =======================
 
 This plugin allows to choose which packages should be installed in a shared directory with their version number as in this example:
