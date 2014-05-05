@@ -117,10 +117,16 @@ class GlobalInstaller extends LibraryInstaller
 
     protected function getPackagePath(PackageInterface $package)
     {
-        $version =  $package->getPrettyName();
-        
+        $version = $package->getPrettyName();
+
         if ($package->isDev() && $reference = $package->getSourceReference()) {
-            $version .= '-' . (strlen($reference) === 40 ? substr($reference, 0, 7) : $reference);
+            $reference = (strlen($reference) === 40 ? substr($reference, 0, 7) : $reference);
+            // If there is / in reference switch to pretty version
+            if (strpos($reference, '/') !== FALSE) {
+                $version .= '-' . $package->getPrettyVersion();
+            } else {
+                $version .= '-' . $reference;
+            }
         } else {
             $version .= '-' . $package->getPrettyVersion();
         }
