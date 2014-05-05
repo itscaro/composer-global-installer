@@ -15,7 +15,7 @@ class GlobalInstaller extends LibraryInstaller
 {
 
     protected $_config;
-    protected $_globalDir = "vendor-global";
+    protected $_globalDir;
     protected $_globalPackages = array();
     protected $_supportedTypes = array('library');
 
@@ -26,6 +26,8 @@ class GlobalInstaller extends LibraryInstaller
 
             if (isset($this->_config['vendor-global-dir'])) {
                 $this->_globalDir = $this->_config['vendor-global-dir'];
+            } else {
+                $this->_globalDir = "vendor-global";
             }
 
             if (isset($this->_config['vendor-global-types'])) {
@@ -36,7 +38,7 @@ class GlobalInstaller extends LibraryInstaller
                 }
             }
 
-            if ($composer->getConfig()->has('vendor-global')) {
+            if ($composer->getConfig()->has('vendor-global-packages')) {
                 // Bad format, use default
                 // @todo throw exception
                 if (is_array($composer->getConfig()->get('vendor-global-packages'))) {
