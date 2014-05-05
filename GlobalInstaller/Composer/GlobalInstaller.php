@@ -15,19 +15,19 @@ class GlobalInstaller extends LibraryInstaller
 {
 
     protected $_config;
-    protected $_globalDir;
+    protected $_isInUse = false;
+    protected $_globalDir = "vendor-global";
     protected $_globalPackages = array();
     protected $_supportedTypes = array('library');
 
     public function __construct(IOInterface $io, Composer $composer, $type = null)
     {
         if ($composer->getConfig()->has('composer-global-installer')) {
+            $this->_isInUse = true;
             $this->_config = $composer->getConfig()->get('composer-global-installer');
 
             if (isset($this->_config['vendor-global-dir'])) {
                 $this->_globalDir = $this->_config['vendor-global-dir'];
-            } else {
-                $this->_globalDir = "vendor-global";
             }
 
             if (isset($this->_config['vendor-global-types'])) {
@@ -100,10 +100,10 @@ class GlobalInstaller extends LibraryInstaller
 
     protected function getPackageBasePath(PackageInterface $package)
     {
-        if (isset($this->_globalDir)) {
+        if ($this->_isInUse) {
             // If certains packages are specified to be global
             if (!empty($this->_globalPackages) && !in_array($package->getName(), $this->_globalPackages)) {
-                return $this->getPackageBasePath($package);
+                return parent::getPackageBasePath($package);
             }
 
             $this->initializeGlobalDir();
@@ -111,7 +111,7 @@ class GlobalInstaller extends LibraryInstaller
 
             return $this->_globalDir . '/' . $this->getPackagePath($package);
         } else {
-            return $this->getPackageBasePath($package);
+            return parent::getPackageBasePath($package);
         }
     }
 
@@ -130,7 +130,7 @@ class GlobalInstaller extends LibraryInstaller
 
     protected function initializeGlobalDir()
     {
-        if (isset($this->_globalDir)) {
+        if ($this->_isInUse) {
             $this->filesystem->ensureDirectoryExists($this->_globalDir);
             // @todo throw exception if path is not accessible
             $this->_globalDir = realpath($this->_globalDir);
