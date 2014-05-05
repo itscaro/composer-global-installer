@@ -117,21 +117,24 @@ class GlobalInstaller extends LibraryInstaller
 
     protected function getPackagePath(PackageInterface $package)
     {
-        /*
-          $version = $package->getVersion();
-          if ($package->isDev() && $reference = $package->getSourceReference()) {
-          $version .= '-' . (strlen($reference) === 40 ? substr($reference, 0, 7) : $reference);
-          }
-         */
+        $version =  $package->getPrettyName();
+        
+        if ($package->isDev() && $reference = $package->getSourceReference()) {
+            $version .= '-' . (strlen($reference) === 40 ? substr($reference, 0, 7) : $reference);
+        } else {
+            $version .= '-' . $package->getPrettyVersion();
+        }
 
-        return $package->getPrettyName() . '-' . $package->getPrettyVersion();
+        return $version;
     }
 
     protected function initializeGlobalDir()
     {
-        $this->filesystem->ensureDirectoryExists($this->_globalDir);
-        // @todo throw exception if path is not accessible
-        $this->_globalDir = realpath($this->_globalDir);
+        if (isset($this->_globalDir)) {
+            $this->filesystem->ensureDirectoryExists($this->_globalDir);
+            // @todo throw exception if path is not accessible
+            $this->_globalDir = realpath($this->_globalDir);
+        }
     }
 
     /**
