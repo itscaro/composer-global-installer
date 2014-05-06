@@ -58,7 +58,7 @@ Only zendframework/zendframework1 package is installed in /usr/share/php
 {
   "config": {
     "vendor-dir": "vendor",
-    "itscaro-global-installer": {
+    "composer-global-installer": {
       "vendor-global-dir": "/usr/share/php",
       "vendor-global-packages": [
         "zendframework/zendframework1"
